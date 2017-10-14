@@ -40,9 +40,10 @@ def echo(bot, update):
     if event_what:
         reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'),
                                               InlineKeyboardButton('dislike', callback_data='dislike')]])
-        bot_msg = bot.send_message(chat_id=update.message.chat_id,  reply_markup=reply_markup,
-                         text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
+        bot_msg = bot.send_message(chat_id=update.message.chat_id, reply_markup=reply_markup, parse_mode='markdown',
+                         text="Guys, [{}](tg://user?id={}) invites you to {}{}. Wonderful idea, let's go!".format(
                              update.message.from_user.first_name,
+                             update.message.from_user.id,
                              event_what,
                              ' ' + event_when if event_when != '' else ''
                          ))
@@ -76,14 +77,15 @@ def button(bot, update):
             database.add_dislike(activity['id'], query.from_user.id, user_name, query.from_user.name)
             database.remove_like(activity['id'], query.from_user.id)
 
-        text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
+        text="Guys, [{}](tg://user?id={}) invites you to {}{}. Wonderful idea, let's go!".format(
             activity['author_name'].split()[0],
+            activity['author'],
             activity['title'],
             ' on ' + activity['event_when'] if activity['event_when'] != '' else ''
         )
 
-        likes = [x['person_name'] for x in database.get_likes(activity['id'])]
-        dislikes = [x['person_name'] for x in database.get_dislikes(activity['id'])]
+        likes = ['[{0}](tg://user?id={1})'.format(x['person_name'], x['person']) for x in database.get_likes(activity['id'])]
+        dislikes = ['[{0}](tg://user?id={1})'.format(x['person_name'], x['person']) for x in database.get_dislikes(activity['id'])]
         text += '\n—\n👍 {0}\n—\n👎 {1}'.format(', '.join(likes), ', '.join(dislikes))
 
         reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
@@ -91,7 +93,8 @@ def button(bot, update):
         bot.edit_message_text(text=text,
                               chat_id=query.message.chat_id,
                               message_id=query.message.message_id,
-                              reply_markup=reply_markup)
+                              reply_markup=reply_markup,
+                              parse_mode='markdown')
     except Exception as e:
         print(str(e))
     query.answer()
