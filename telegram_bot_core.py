@@ -98,8 +98,11 @@ def button(bot, update):
                               parse_mode='markdown')
 
         if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre']:
-            for user in likes_list:
-                buy2(bot, update, activity, user, 'qr-code')
+            try:
+                for user in likes_list:
+                    buy2(bot, update, activity, user, 'qr-code')
+            except Exception as e:
+                print(str(e))
             bot.send_message(chat_id=query.message.chat_id, text="Ok, we go to the {0}, switch to @WeeGoBot for payment".format(activity['title']))
 
     except Exception as e:
