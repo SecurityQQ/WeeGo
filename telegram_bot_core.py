@@ -28,27 +28,28 @@ def is_triggger(text):
     return len(res) > 0
 
 def extract_place(text):
-    result = recogniseEvent(text)
-    if len(result['what']) > 0:
-        return result
-    else:
-        return False
+    return recogniseEvent(text)
 
 def echo(bot, update):
     event = extract_place(update.message.text)
-    event_what = event['what'][0]
     event_where = event['where'][0] if len(event['where']) > 0 else ''
     event_when = event['when'][0] if len(event['when']) > 0 else ''
+    event_what = event['what'][0] if len(event['what']) > 0 else event_when
     print(event_what + ' ' + event_where + ' ' + event_when)
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
-    bot_msg = bot.send_message(chat_id=update.message.chat_id, reply_markup=reply_markup,
-                     text="Guys!, {} invites you to {}. Wonderful idea, let's go!".format(
-                     update.message.from_user.first_name, event_what))
-    name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
-    activity_id = database.add_new_activity(event_what, event_where, event_when, update.message.text, update.message.from_user.id, name)
-    database.add_like(activity_id, update.message.from_user.id, name)
 
-    database.update_activity(activity_id, bot_msg.chat_id, bot_msg.message_id)
+    if event_what:
+        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'),
+                                              InlineKeyboardButton('dislike', callback_data='dislike')]])
+        bot_msg = bot.send_message(chat_id=update.message.chat_id,  reply_markup=reply_markup,
+                         text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
+                             update.message.from_user.first_name,
+                             event_what,
+                             ' on ' + event_when if event_when != '' else ''
+                         ))
+        name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
+        activity_id = database.add_new_activity(event_what, event_where, event_when, update.message.text, update.message.from_user.id, name)
+        database.add_like(activity_id, update.message.from_user.id, name)
+        database.update_activity(activity_id, bot_msg.chat_id, bot_msg.message_id)
 
 
 
