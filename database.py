@@ -40,9 +40,19 @@ def close_db(error):
 def add_new_activity(title, full_message, author, author_name):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('insert into entries (title, full_message, author, author_name) values (?, ?, ?, ?)', (title, full_message, author, author_name))
+    cursor.execute(
+        'insert into entries (title, full_message, author, author_name) values (?, ?, ?, ?)', 
+        (title, full_message, author, author_name))
     db.commit()
     return cursor.lastrowid
+
+
+def update_activity(activity_id, chat_id, message_id):
+    db = get_db()
+    db.execute(
+        'update entries set chat_id = ?, message_id = ? where id = ?', 
+        (chat_id, message_id, activity_id))
+    db.commit()
 
 
 def get_activities():
@@ -50,6 +60,20 @@ def get_activities():
     cur = db.execute('select * from entries order by id asc')
     entries = cur.fetchall()
     return [dict(x) for x in entries]
+
+
+def get_activity_by_id(activity_id):
+    db = get_db()
+    cur = db.execute('select * from entries where id = ?', (activity_id, ))
+    entries = cur.fetchall()
+    return [dict(x) for x in entries][0]
+
+
+def get_activity_by_msg(chat_id, message_id):
+    db = get_db()
+    cur = db.execute('select * from entries where chat_id = ? and message_id = ?', (chat_id, message_id))
+    entries = cur.fetchall()
+    return [dict(x) for x in entries][0]
 
 
 def get_likes(activity_id):
@@ -67,10 +91,30 @@ def add_like(activity_id, user_id, user_name):
 
 
 def remove_like(activity_id, user_id):
+    db = get_db()
+    db.execute('delete from likes where id = ? and person = ?', (activity_id, user_id))
+    db.commit()
+
+
+def get_dislikes(activity_id):
+    db = get_db()
+    cur = db.execute('select distinct person, person_name from dislikes where id = (?)', (int(activity_id), ))
+    entries = cur.fetchall()
+    return [dict(x) for x in entries]
+
+
+def add_dislike(activity_id, user_id, user_name):
     # TODO: check if like exists
     db = get_db()
-    db.execute('delte from likes where id = ? and person = ?', (activity_id, user_id))
+    db.execute('insert into dislikes (id, person, person_name) values (?, ?, ?)', (activity_id, user_id, user_name))
     db.commit()
+
+
+def remove_dislike(activity_id, user_id):
+    db = get_db()
+    db.execute('delete from dislikes where id = ? and person = ?', (activity_id, user_id))
+    db.commit()
+
 
 if __name__ == '__main__':
     init_db()

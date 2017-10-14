@@ -19,7 +19,7 @@ def close_db(error):
 
 @app.route('/')
 def hello_world():
-    return json.dumps(database.get_activities())
+    return json.dumps(database.get_activities(), ensure_ascii=False, indent=4)
 
 @app.route('/get_activities', methods=['GET'])
 def get_activities():
@@ -34,10 +34,14 @@ def get_likes():
 def add_like():
     activity_id = request.args.get('activity_id')
     user_id = request.args.get('user_id')
-    database.add_like(activity_id, user_id)
+    user_name = request.args.get('user_name')
+    database.add_like(activity_id, user_id, user_name)
+    return json.dumps({'status': 'ok'})
 
 @app.route('/remove_like', methods=['GET'])
 def remove_like():
     activity_id = request.args.get('activity_id')
     user_id = request.args.get('user_id')
     database.remove_like(activity_id, user_id)
+    return json.dumps({'status': 'ok'})
+    
