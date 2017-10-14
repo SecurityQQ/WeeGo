@@ -95,7 +95,7 @@ def button(bot, update):
 
     likes = [x['person_name'] for x in database.get_likes(activity['id'])]
     dislikes = [x['person_name'] for x in database.get_dislikes(activity['id'])]
-    text = '+1 {0}\n-1 {1}'.format(', '.join(likes), ', '.join(dislikes))
+    text = '👍 {0}\n👎 {1}'.format(', '.join(likes), ', '.join(dislikes))
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
 
