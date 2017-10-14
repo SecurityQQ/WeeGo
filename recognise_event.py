@@ -40,6 +40,40 @@ def getOrgEntertainment(graph):
             where_facts.append(str(row["label"]))
     return where_facts
 
+def getOrgEducational(graph):
+    try:
+        where = graph.query(
+            """SELECT DISTINCT ?label
+            WHERE {
+              ?fact_id rdf:type Org:Educational .
+              ?fact_id Basic:label ?label
+           }
+           GROUP BY ?fact_id """)
+    except Exception:
+        return []
+    where_facts = []
+    for row in where:
+        if str(row["label"]) != 'None':
+            where_facts.append(str(row["label"]))
+    return where_facts
+
+def getOrgDepartment(graph):
+    try:
+        where = graph.query(
+            """SELECT DISTINCT ?label
+            WHERE {
+              ?fact_id rdf:type Org:Department .
+              ?fact_id Basic:label ?label
+           }
+           GROUP BY ?fact_id """)
+    except Exception:
+        return []
+    where_facts = []
+    for row in where:
+        if str(row["label"]) != 'None':
+            where_facts.append(str(row["label"]))
+    return where_facts
+
 def getPointOfTime(graph):
     try:
         where = graph.query(
@@ -97,6 +131,23 @@ def getGeoCapital(graph):
             """SELECT DISTINCT ?label
             WHERE {
               ?fact_id rdf:type Geo:Capital .
+              ?fact_id Basic:identifier ?label
+           }
+           GROUP BY ?fact_id """)
+    except Exception:
+        return []
+    where_facts = []
+    for row in where:
+        if str(row["label"]) != 'None':
+            where_facts.append(str(row["label"]))
+    return where_facts
+
+def getGeoCountry(graph):
+    try:
+        where = graph.query(
+            """SELECT DISTINCT ?label
+            WHERE {
+              ?fact_id rdf:type Geo:Country .
               ?fact_id Basic:identifier ?label
            }
            GROUP BY ?fact_id """)
@@ -167,9 +218,11 @@ def getGraphFromText(text):
 def recogniseEvent(text):
     graph = getGraphFromText(text)
     result = dict()
-    result['what'] = getOrgCommercial(graph) + getOrgEntertainment(graph) # + getPlacementObject(graph)
+    result['what'] = getOrgCommercial(graph) + getOrgEntertainment(graph) + getOrgEducational(graph)  + \
+                     getOrgDepartment(graph )# + getPlacementObject(graph)
     result['when'] = getPointOfTime(graph)
-    result['where'] = getGeographicalRegion(graph) + getGeoInhabitedLocality(graph) + getGeoCapital(graph)
+    result['where'] = getGeographicalRegion(graph) + getGeoInhabitedLocality(graph) + getGeoCapital(graph) + \
+                      getGeoCountry(graph)
     return result
 
 # Ok:
@@ -180,11 +233,15 @@ def recogniseEvent(text):
 # I want to go to the theatre.
 # I want to go to the club 21.10.17.
 # I want to go to Africa
+# office, university
+# Moscow, Barcelona, USA
 
 # Not ok:
-# I was in the club - problem (also found as an event)
+# I was in the club - problem...
+
+# park, aquarium, office, university
 
 if __name__ == "__main__":
-    result = recogniseEvent("I want to go to the club 21.10.17.")
+    result = recogniseEvent("I want to go to USA")
     print(result)
 
