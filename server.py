@@ -25,6 +25,22 @@ def hello_world():
 def get_activities():
     return json.dumps(database.get_activities(), ensure_ascii=False, indent=4)
 
+@app.route('/get_aggregated_activities', methods=['GET'])
+def get_aggregated_activities():
+    activities = database.get_activities()
+    aggreagated_activities = {}
+    for activity in activities:
+        if activity['title'] not in aggreagated_activities:
+            aggreagated_activities[activity['title']] = {}
+        for person in database.get_likes(activity['id']):
+            aggreagated_activities[activity['title']][person['person']] = person
+
+    response = []
+    for k, v in aggreagated_activities.items():
+        response.append({'title': k, 'likes': list(v.values())})
+    return json.dumps(response, ensure_ascii=False, indent=4)
+
+
 @app.route('/add_activity', methods=['GET'])
 def add_activities():
     title = request.args.get('title')
