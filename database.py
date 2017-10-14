@@ -5,7 +5,7 @@ DATABASE = 'flaskr.db'
 
 
 def connect_db():
-    rv = sqlite3.connect(DATABASE)
+    rv = sqlite3.connect(DATABASE, check_same_thread=False)
     rv.row_factory = sqlite3.Row
     return rv
 
@@ -34,6 +34,29 @@ def close_db(error):
 
 
 def add_new_activity(title, author):
-    db = database.get_db()
+    db = get_db()
     db.execute('insert into entries (title, author) values (?, ?)', (title, author))
+    db.commit()
+    return db.lastrowid
+
+
+def get_activities():
+    db = get_db()
+    cur = db.execute('select id, title, author from entries order by id asc')
+    entries = cur.fetchall()
+    return [dict(x) for x in entries]
+
+
+def get_likes(activity_id):
+    db = get_db()
+    cur = db.execute('select distinct person from likes where id == (?)', (int(activity_id), ))
+    entries = cur.fetchall()
+    return [dict(x) for x in entries]
+
+
+def add_like(activity_id, user_id):
+    # TODO: check if like exists
+    print(322, activity_id, user_id)
+    db = get_db()
+    db.execute('insert into likes (id, person) values (?, ?)', (activity_id, user_id))
     db.commit()

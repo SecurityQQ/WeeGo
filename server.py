@@ -1,6 +1,7 @@
 from flask import Flask, request, g
 import os
 import database
+import json
 
 app = Flask(__name__)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -25,7 +26,13 @@ def close_db(error):
 
 @app.route('/')
 def hello_world():
-    db = database.get_db()
-    cur = db.execute('select title, author from entries order by id desc')
-    entries = cur.fetchall()
-    return str([dict(x) for x in entries])
+    return json.dumps(database.get_activities())
+
+@app.route('/get_activities', methods=['GET'])
+def get_activities():
+    return json.dumps(database.get_activities(), ensure_ascii=False, indent=4)
+
+@app.route('/get_likes', methods=['GET'])
+def get_likes():
+    acvtivity_id = request.args.get('id')
+    return json.dumps(database.get_likes(acvtivity_id), ensure_ascii=False, indent=4)
