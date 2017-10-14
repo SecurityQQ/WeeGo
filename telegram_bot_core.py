@@ -1,5 +1,5 @@
-
 import database
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater,\
     CommandHandler,\
     MessageHandler,\
@@ -31,8 +31,6 @@ def extract_place(text):
     return recogniseEvent(text)
 
 def echo(bot, update):
-    print(update.message.text)
-    print('finding place')
     event = extract_place(update.message.text)
     event_where = event['where'][0] if len(event['where']) > 0 else ''
     event_when = event['when'][0] if len(event['when']) > 0 else ''
@@ -40,7 +38,9 @@ def echo(bot, update):
     print(event_what + ' ' + event_where + ' ' + event_when)
 
     if event_what:
-        bot_msg = bot.send_message(chat_id=update.message.chat_id,
+        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'),
+                                              InlineKeyboardButton('dislike', callback_data='dislike')]])
+        bot_msg = bot.send_message(chat_id=update.message.chat_id,  reply_markup=reply_markup,
                          text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
                              update.message.from_user.first_name,
                              event_what,
@@ -95,7 +95,7 @@ def button(bot, update):
 
     likes = [x['person_name'] for x in database.get_likes(activity['id'])]
     dislikes = [x['person_name'] for x in database.get_dislikes(activity['id'])]
-    text = 'Норм идея: {0}\nНеоч: {1}'.format(', '.join(likes), ', '.join(dislikes))
+    text = '+1 {0}\n-1 {1}'.format(', '.join(likes), ', '.join(dislikes))
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
 
