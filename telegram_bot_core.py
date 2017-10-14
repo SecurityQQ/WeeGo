@@ -103,7 +103,10 @@ def button(bot, update):
                     buy2(bot, update, activity, user, 'qr-code')
             except Exception as e:
                 print(str(e))
-            bot.send_message(chat_id=query.message.chat_id, text="Ok, we go to the {0}, switch to @WeeGoBot for payment".format(activity['title']))
+            bot.send_message(
+                chat_id=query.message.chat_id,
+                parse_mode='markdown',
+                text="Ok, we go to the {0}, switch to [WeeGoBot](tg://resolve?domain=WeeGoBot) for payment".format(activity['title']))
 
     except Exception as e:
         print(str(e))
