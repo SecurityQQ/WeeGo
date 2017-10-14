@@ -1,7 +1,7 @@
 
 import database
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, BaseFilter
+from telegram.ext import Updater, CommandHandler, MessageHandler, BaseFilter, CallbackQueryHandler
 from recognise_event import recogniseEvent
 import re
 
