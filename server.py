@@ -12,13 +12,6 @@ app.config.update(dict(
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
-@app.cli.command('initdb')
-def initdb_command():
-    """Initializes the database."""
-    database.init_db()
-    print('Initialized the database.')
-
-
 @app.teardown_appcontext
 def close_db(error):
     database.close_db(error)
@@ -26,13 +19,37 @@ def close_db(error):
 
 @app.route('/')
 def hello_world():
-    return json.dumps(database.get_activities())
+    return json.dumps(database.get_activities(), ensure_ascii=False, indent=4)
 
 @app.route('/get_activities', methods=['GET'])
 def get_activities():
     return json.dumps(database.get_activities(), ensure_ascii=False, indent=4)
 
+@app.route('/add_activity', methods=['GET'])
+def add_activities():
+    title = request.args.get('title')
+    description = request.args.get('description')
+    user_id = request.args.get('user_id')
+    user_name = request.args.get('user_name')
+    database.add_new_activity(title, description, user_id, user_name)
+    return json.dumps({'status': 'ok'})
+
 @app.route('/get_likes', methods=['GET'])
 def get_likes():
-    acvtivity_id = request.args.get('id')
-    return json.dumps(database.get_likes(acvtivity_id), ensure_ascii=False, indent=4)
+    activity_id = request.args.get('activity_id')
+    return json.dumps(database.get_likes(activity_id), ensure_ascii=False, indent=4)
+
+@app.route('/add_like', methods=['GET'])
+def add_like():
+    activity_id = request.args.get('activity_id')
+    user_id = request.args.get('user_id')
+    user_name = request.args.get('user_name')
+    database.add_like(activity_id, user_id, user_name)
+    return json.dumps({'status': 'ok'})
+
+@app.route('/remove_like', methods=['GET'])
+def remove_like():
+    activity_id = request.args.get('activity_id')
+    user_id = request.args.get('user_id')
+    database.remove_like(activity_id, user_id)
+    return json.dumps({'status': 'ok'})

@@ -1,19 +1,17 @@
 
 import database
-from telegram.ext import Updater,\
-    CommandHandler,\
-    MessageHandler,\
-    BaseFilter,\
-    ShippingQueryHandler,\
-    PreCheckoutQueryHandler,\
-    Filters,\
-    CallbackQueryHandler
-
+<<<<<<< HEAD
+from telegram.ext import Updater, CommandHandler, MessageHandler, BaseFilter, ShippingQueryHandler, PreCheckoutQueryHandler, Filters
 from telegram.invoice import Invoice
 from telegram.labeledprice import LabeledPrice
 from telegram.successfulpayment import SuccessfulPayment
+
+=======
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, BaseFilter
 from recognise_event import recogniseEvent
 import re
+>>>>>>> 630b6654478ba623591056fbe8bbd9e386554b80
 
 def start(bot, update):
     update.message.reply_text('Hello World!')
@@ -24,16 +22,16 @@ def hello(bot, update):
         'Hello {}'.format(update.message.from_user.first_name))
 
 
-def is_triggger(text):
-    res = recogniseEvent(text)
-    return len(res) > 0
-
 def extract_place(text):
     result = recogniseEvent(text)
     if len(result['what']) > 0:
         return result
     else:
-        return False
+        assert False
+
+
+# def like_callback(id, from_user, message)
+
 
 def echo(bot, update):
     print(update.message.text)
@@ -55,6 +53,10 @@ def echo(bot, update):
         update.message.from_user.first_name, place) + ". Охуенно, сходите, потусуетесь, погнали!")
     database.update_activity(activity_id, bot_msg.chat_id, bot_msg.message_id)
 
+
+def is_triggger(text):
+    res = re.findall('го в ([a-zA-Z]*)', text.lower())
+    return len(res) > 0
 
 
 class PlaceFilter(BaseFilter):
