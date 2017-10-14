@@ -33,7 +33,7 @@ def add_activities():
     user_name = request.args.get('user_name')
     user_username = request.args.get('user_username')
     activity_id = database.add_new_activity(title, '', '', description, user_id, user_name, user_username)
-    database.add_like(activity_id, user_id, user_name)
+    database.add_like(activity_id, user_id, user_name, user_username)
     return json.dumps({'status': 'ok'})
 
 @app.route('/get_likes', methods=['GET'])
