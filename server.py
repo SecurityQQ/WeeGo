@@ -1,4 +1,4 @@
-from flask import Flask, request, g
+from flask import Flask, request
 import os
 import database
 import json
