@@ -34,8 +34,8 @@ def echo(bot, update):
     event = extract_place(update.message.text)
     event_where = event['where'][0] if len(event['where']) > 0 else ''
     event_when = event['when'][0] if len(event['when']) > 0 else ''
-    event_what = event['what'][0] if len(event['what']) > 0 else event_when
-    print(event_what + ' ' + event_where + ' ' + event_when)
+    event_what = event['what'][0] if len(event['what']) > 0 else event_where
+    print(event_what + ' - ' + event_where + ' - ' + event_when)
 
     if event_what:
         reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'),
@@ -44,7 +44,7 @@ def echo(bot, update):
                          text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
                              update.message.from_user.first_name,
                              event_what,
-                             ' on ' + event_when if event_when != '' else ''
+                             ' ' + event_when if event_when != '' else ''
                          ))
         name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
         activity_id = database.add_new_activity(
