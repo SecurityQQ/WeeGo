@@ -106,7 +106,7 @@ def button(bot, update):
             bot.send_message(
                 chat_id=query.message.chat_id,
                 parse_mode='markdown',
-                text="Ok, we go to the {0}, switch to WeeGoBot (tg://resolve?domain=WeeGoBot) for payment".format(activity['title']))
+                text="Ok, we go to the {0}, switch to WeeGoBot (tg://resolve?domain=WeeGoBot​) for payment".format(activity['title']))
 
     except Exception as e:
         print(str(e))
