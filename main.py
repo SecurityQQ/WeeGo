@@ -1,3 +1,12 @@
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Go buhnem!'
+
+
+
 from telegram.ext import Updater, CommandHandler, MessageHandler, BaseFilter
 #
 #
@@ -50,4 +59,8 @@ updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 
 updater.start_polling()
-updater.idle()
+# updater.idle()
+
+
+
+
