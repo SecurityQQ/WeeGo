@@ -35,7 +35,7 @@ def echo(bot, update):
     event_where = event['where'][0] if len(event['where']) > 0 else ''
     event_when = event['when'][0] if len(event['when']) > 0 else ''
     event_what = event['what'][0] if len(event['what']) > 0 else event_where
-    print(event_what + ' ' + event_where + ' ' + event_when)
+    print(event_what + ' - ' + event_where + ' - ' + event_when)
 
     if event_what:
         reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'),
