@@ -2,6 +2,8 @@ drop table if exists entries;
 create table entries (
   id integer primary key autoincrement,
   title text not null,
+  event_where text not null,
+  event_when text not null,
   full_message text not null,
   author text not null,
   author_name text not null

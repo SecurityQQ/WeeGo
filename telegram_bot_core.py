@@ -1,8 +1,10 @@
 
 import database
 from telegram.ext import Updater, CommandHandler, MessageHandler, BaseFilter
-#
-#
+from recognise_event import recogniseEvent
+import re
+
+
 def start(bot, update):
     update.message.reply_text('Hello World!')
 
@@ -11,25 +13,27 @@ def hello(bot, update):
     update.message.reply_text(
         'Hello {}'.format(update.message.from_user.first_name))
 
-import re
-
 
 def extract_place(text):
-    res = re.findall('го в (\w*)', text.lower())
-    if len(res) > 0:
-        return res[0]
+    result = recogniseEvent(text)
+    if len(result['what']) > 0:
+        return result
     else:
         assert False
 
 def echo(bot, update):
     print(update.message.text)
     print('finding place')
-    place = extract_place(update.message.text)
-    print(place)
-    bot.send_message(chat_id=update.message.chat_id, text="ЧУВАКИ, {} ({}) РЕАЛЬНО ЗОВЕТ ВАС В {}".format(
-        update.message.from_user.first_name, update.message.from_user.id, place) + ". Охуенно, сходите, потусуетесь, погнали!")
+    event = extract_place(update.message.text)
+    event_what = event['what'][0]
+    event_where = event['where'][0] if len(event['where']) > 0 else ''
+    event_when = event['when'][0] if len(event['when']) > 0 else ''
+    print(event_what + ' ' + event_where + ' ' + event_when)
+    bot.send_message(chat_id=update.message.chat_id,
+                     text="Guys!, {} invites you to {}. Wonderful idea, let's go!".format(
+                         update.message.from_user.first_name, event_what))
     name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
-    activity_id = database.add_new_activity(place, update.message.text, update.message.from_user.id, name)
+    activity_id = database.add_new_activity(event_what, event_where, event_when, update.message.text, update.message.from_user.id, name)
     database.add_like(activity_id, update.message.from_user.id, name)
 
 def is_triggger(text):

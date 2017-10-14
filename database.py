@@ -37,10 +37,11 @@ def close_db(error):
         sqlite_dbs[thread_id] = None
 
 
-def add_new_activity(title, full_message, author, author_name):
+def add_new_activity(title, event_where, event_when, full_message, author, author_name):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('insert into entries (title, full_message, author, author_name) values (?, ?, ?, ?)', (title, full_message, author, author_name))
+    cursor.execute('insert into entries (title, event_where, event_when, full_message, author, author_name) values (?, ?, ?, ?, ?, ?)',
+                   (title, event_where, event_when, full_message, author, author_name))
     db.commit()
     return cursor.lastrowid
 
