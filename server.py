@@ -25,6 +25,15 @@ def hello_world():
 def get_activities():
     return json.dumps(database.get_activities(), ensure_ascii=False, indent=4)
 
+@app.route('/add_activity', methods=['GET'])
+def get_activities():
+    title = request.args.get('title')
+    description = request.args.get('description')
+    user_id = request.args.get('user_id')
+    user_name = request.args.get('user_name')
+    database.add_new_activity(title, description, user_id, user_name)
+    return json.dumps({'status': 'ok'})
+
 @app.route('/get_likes', methods=['GET'])
 def get_likes():
     activity_id = request.args.get('activity_id')
@@ -44,4 +53,3 @@ def remove_like():
     user_id = request.args.get('user_id')
     database.remove_like(activity_id, user_id)
     return json.dumps({'status': 'ok'})
-    
