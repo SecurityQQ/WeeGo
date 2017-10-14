@@ -58,24 +58,6 @@ class PlaceFilter(BaseFilter):
         return bool(message.text and not message.text.startswith('/') and is_triggger(message.text))
 
 
-class LikeFilter(BaseFilter):
-    def filter(self, message):
-        return bool(message.text and not message.text.startswith('/') and (message.text == 'like' or message.text == 'go') and 
-            message.reply_to_message and message.reply_to_message.text.startswith('ЧУВАКИ, ') and message.reply_to_message.to_dict()['from']['is_bot'])
-
-
-def echo_like(bot, update):
-    print(update.message.text)
-    print('finding place')
-    id_ = int(update.message.reply_to_message.text.rsplit(' ', 1)[-1])
-    place = database.get_activity_by_id(id_)['title']
-    bot.send_message(chat_id=update.message.chat_id, 
-        text="ЧУВАКИ, {} ТОЖЕ ХОЧЕТ СГОНЯТЬ В {}".format(
-        update.message.from_user.first_name, place) + ". Нужно идти, инфа соточка!")
-    name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
-    database.add_like(id_, update.message.from_user.id, name)
-
-
 placeFilter = PlaceFilter()
 
 
@@ -92,10 +74,15 @@ def button(bot, update):
         database.add_dislike(activity['id'], query.from_user.id, user_name)
         database.remove_like(activity['id'], query.from_user.id)
 
+    text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
+        activity['author_name'].split()[0],
+        activity['title'],
+        ' on ' + activity['event_when'] if activity['event_when'] != '' else ''
+    )
 
     likes = [x['person_name'] for x in database.get_likes(activity['id'])]
     dislikes = [x['person_name'] for x in database.get_dislikes(activity['id'])]
-    text = '+1 {0}\n-1 {1}'.format(', '.join(likes), ', '.join(dislikes))
+    text += '\n—\n👍 {0}\n—\n👎 {1}'.format(', '.join(likes), ', '.join(dislikes))
 
     reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
 
@@ -111,10 +98,8 @@ def button(bot, update):
 updater = Updater('471069982:AAFps0N56HO1RCCMidRpqcd2OtFT8HzQdJ0')
 
 echo_handler = MessageHandler(placeFilter, echo)
-like_handler = MessageHandler(LikeFilter(), echo_like)
 
 updater.dispatcher.add_handler(echo_handler)
-updater.dispatcher.add_handler(like_handler)
 updater.dispatcher.add_handler(CallbackQueryHandler(button))
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
@@ -139,7 +124,7 @@ def successful_payment_callback(bot, update):
                        caption="It is your ticket, scan it in the cinema")
 
 def buy(bot, update, payload):
-    prices = [LabeledPrice('Cinema Ticket', 300099)]
+    prices = [LabeledPrice('Cinema Ticket', 799)]
     title = 'Cinema Ticket'
     description = 'Diagonal, 11'
     start_parameter = 'start_parameter'
