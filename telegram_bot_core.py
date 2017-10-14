@@ -9,7 +9,6 @@ from telegram.ext import Updater,\
     Filters,\
     CallbackQueryHandler
 
-from telegram.invoice import Invoice
 from telegram.labeledprice import LabeledPrice
 from telegram.successfulpayment import SuccessfulPayment
 from recognise_event import recogniseEvent
