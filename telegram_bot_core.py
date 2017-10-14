@@ -44,7 +44,7 @@ def echo(bot, update):
                          text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
                              update.message.from_user.first_name,
                              event_what,
-                             ' on ' + event_when if event_when != '' else ''
+                             ' ' + event_when if event_when != '' else ''
                          ))
         name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
         activity_id = database.add_new_activity(event_what, event_where, event_when, update.message.text, update.message.from_user.id, name)
