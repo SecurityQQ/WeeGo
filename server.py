@@ -34,5 +34,17 @@ def get_activities():
 
 @app.route('/get_likes', methods=['GET'])
 def get_likes():
-    acvtivity_id = request.args.get('id')
-    return json.dumps(database.get_likes(acvtivity_id), ensure_ascii=False, indent=4)
+    activity_id = request.args.get('activity_id')
+    return json.dumps(database.get_likes(activity_id), ensure_ascii=False, indent=4)
+
+@app.route('/add_like', methods=['GET'])
+def add_like():
+    activity_id = request.args.get('activity_id')
+    user_id = request.args.get('user_id')
+    database.add_like(activity_id, user_id)
+
+@app.route('/remove_like', methods=['GET'])
+def remove_like():
+    activity_id = request.args.get('activity_id')
+    user_id = request.args.get('user_id')
+    database.remove_like(activity_id, user_id)

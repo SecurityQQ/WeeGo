@@ -64,3 +64,11 @@ def add_like(activity_id, user_id):
     db = get_db()
     db.execute('insert into likes (id, person) values (?, ?)', (activity_id, user_id))
     db.commit()
+
+
+def remove_like(activity_id, user_id):
+    # TODO: check if like exists
+    db = get_db()
+    db.execute('delte from likes where id = ? and person = ?', (activity_id, user_id))
+    db.commit()
+
