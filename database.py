@@ -37,32 +37,32 @@ def close_db(error):
         sqlite_dbs[thread_id] = None
 
 
-def add_new_activity(title, author):
+def add_new_activity(title, full_message, author, author_name):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('insert into entries (title, author) values (?, ?)', (title, author))
+    cursor.execute('insert into entries (title, full_message, author, author_name) values (?, ?, ?, ?)', (title, full_message, author, author_name))
     db.commit()
     return cursor.lastrowid
 
 
 def get_activities():
     db = get_db()
-    cur = db.execute('select id, title, author from entries order by id asc')
+    cur = db.execute('select * from entries order by id asc')
     entries = cur.fetchall()
     return [dict(x) for x in entries]
 
 
 def get_likes(activity_id):
     db = get_db()
-    cur = db.execute('select distinct person from likes where id = (?)', (int(activity_id), ))
+    cur = db.execute('select distinct person, person_name from likes where id = (?)', (int(activity_id), ))
     entries = cur.fetchall()
     return [dict(x) for x in entries]
 
 
-def add_like(activity_id, user_id):
+def add_like(activity_id, user_id, user_name):
     # TODO: check if like exists
     db = get_db()
-    db.execute('insert into likes (id, person) values (?, ?)', (activity_id, user_id))
+    db.execute('insert into likes (id, person, person_name) values (?, ?, ?)', (activity_id, user_id, user_name))
     db.commit()
 
 
@@ -72,3 +72,6 @@ def remove_like(activity_id, user_id):
     db.execute('delte from likes where id = ? and person = ?', (activity_id, user_id))
     db.commit()
 
+if __name__ == '__main__':
+    init_db()
+    print('Initialized the database.')

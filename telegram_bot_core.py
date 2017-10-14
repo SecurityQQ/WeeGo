@@ -28,8 +28,9 @@ def echo(bot, update):
     print(place)
     bot.send_message(chat_id=update.message.chat_id, text="ЧУВАКИ, {} ({}) РЕАЛЬНО ЗОВЕТ ВАС В {}".format(
         update.message.from_user.first_name, update.message.from_user.id, place) + ". Охуенно, сходите, потусуетесь, погнали!")
-    activity_id = database.add_new_activity(place, update.message.from_user.id)
-    database.add_like(activity_id, update.message.from_user.id)
+    name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
+    activity_id = database.add_new_activity(place, update.message.text, update.message.from_user.id, name)
+    database.add_like(activity_id, update.message.from_user.id, name)
 
 def is_triggger(text):
     res = re.findall('го в ([a-zA-Z]*)', text.lower())

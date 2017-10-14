@@ -12,13 +12,6 @@ app.config.update(dict(
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
-@app.cli.command('initdb')
-def initdb_command():
-    """Initializes the database."""
-    database.init_db()
-    print('Initialized the database.')
-
-
 @app.teardown_appcontext
 def close_db(error):
     database.close_db(error)
