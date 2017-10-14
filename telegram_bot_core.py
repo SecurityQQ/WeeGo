@@ -84,7 +84,8 @@ def button(bot, update):
             ' on ' + activity['event_when'] if activity['event_when'] != '' else ''
         )
 
-        likes = ['[{0}](tg://user?id={1})'.format(x['person_name'], x['person']) for x in database.get_likes(activity['id'])]
+        likes_list = database.get_likes(activity['id'])
+        likes = ['[{0}](tg://user?id={1})'.format(x['person_name'], x['person']) for x in likes_list]
         dislikes = ['[{0}](tg://user?id={1})'.format(x['person_name'], x['person']) for x in database.get_dislikes(activity['id'])]
         text += '\n—\n👍 {0}\n—\n👎 {1}'.format(', '.join(likes), ', '.join(dislikes))
 
@@ -95,6 +96,12 @@ def button(bot, update):
                               message_id=query.message.message_id,
                               reply_markup=reply_markup,
                               parse_mode='markdown')
+
+        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre']:
+            for user in likes_list:
+                buy2(bot, update, activity, user, 'qr-code')
+            bot.send_message(chat_id=query.message.chat_id, text="Ok, we go to the {0}, switch to @WeeGoBot for payment".format(activity['title']))
+
     except Exception as e:
         print(str(e))
     query.answer()
@@ -129,6 +136,27 @@ def successful_payment_callback(bot, update):
                        photo=open('./cinema.png', 'rb'),
                        caption="It is your ticket, scan it in the cinema")
 
+
+def buy2(bot, update, activity, user, payload):
+    title = activity['title']
+    prices = [LabeledPrice(title.capitalize() + ' Ticket', 799)]
+    title = title.capitalize() + ' Ticket'
+    description = 'Diagonal, 11'
+    start_parameter = 'start_parameter'
+    currency = 'EUR'
+
+    bot.send_message(chat_id=user['person'], text="Tickets receipt")
+
+    bot.send_invoice(user['person'],
+                     title,
+                     description,
+                     payload,
+                     provider_token="284685063:TEST:MzYxZDFhMjNjNTVj",
+                     start_parameter=start_parameter,
+                     currency=currency,
+                     prices=prices)
+
+
 def buy(bot, update, payload):
     prices = [LabeledPrice('Cinema Ticket', 799)]
     title = 'Cinema Ticket'
@@ -146,8 +174,7 @@ def buy(bot, update, payload):
                      provider_token="284685063:TEST:MzYxZDFhMjNjNTVj",
                      start_parameter=start_parameter,
                      currency=currency,
-                     prices=prices
-                     )
+                     prices=prices)
 
 def send_invoice_with_qr_code_hook(bot, update):
     return buy(bot, update, 'qr-code')
