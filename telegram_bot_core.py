@@ -47,8 +47,9 @@ def echo(bot, update):
                              ' on ' + event_when if event_when != '' else ''
                          ))
         name = update.message.from_user.first_name + ' ' + update.message.from_user.last_name
-        activity_id = database.add_new_activity(event_what, event_where, event_when, update.message.text, update.message.from_user.id, name)
-        database.add_like(activity_id, update.message.from_user.id, name)
+        activity_id = database.add_new_activity(
+            event_what, event_where, event_when, update.message.text, update.message.from_user.id, name, update.message.from_user.name)
+        database.add_like(activity_id, update.message.from_user.id, name, update.message.from_user.name)
         database.update_activity(activity_id, bot_msg.chat_id, bot_msg.message_id)
 
 
@@ -64,33 +65,35 @@ placeFilter = PlaceFilter()
 def button(bot, update):
     query = update.callback_query
 
-    activity = database.get_activity_by_msg(query.message.chat_id, query.message.message_id)
+    try:
+        activity = database.get_activity_by_msg(query.message.chat_id, query.message.message_id)
 
-    user_name = query.from_user.first_name + ' ' + query.from_user.last_name
-    if query.data == 'like':
-        database.add_like(activity['id'], query.from_user.id, user_name)
-        database.remove_dislike(activity['id'], query.from_user.id)
-    else:
-        database.add_dislike(activity['id'], query.from_user.id, user_name)
-        database.remove_like(activity['id'], query.from_user.id)
+        user_name = query.from_user.first_name + ' ' + query.from_user.last_name
+        if query.data == 'like':
+            database.add_like(activity['id'], query.from_user.id, user_name, query.from_user.name)
+            database.remove_dislike(activity['id'], query.from_user.id)
+        else:
+            database.add_dislike(activity['id'], query.from_user.id, user_name, query.from_user.name)
+            database.remove_like(activity['id'], query.from_user.id)
 
-    text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
-        activity['author_name'].split()[0],
-        activity['title'],
-        ' on ' + activity['event_when'] if activity['event_when'] != '' else ''
-    )
+        text="Guys, {} invites you to {}{}. Wonderful idea, let's go!".format(
+            activity['author_name'].split()[0],
+            activity['title'],
+            ' on ' + activity['event_when'] if activity['event_when'] != '' else ''
+        )
 
-    likes = [x['person_name'] for x in database.get_likes(activity['id'])]
-    dislikes = [x['person_name'] for x in database.get_dislikes(activity['id'])]
-    text += '\n—\n👍 {0}\n—\n👎 {1}'.format(', '.join(likes), ', '.join(dislikes))
+        likes = [x['person_name'] for x in database.get_likes(activity['id'])]
+        dislikes = [x['person_name'] for x in database.get_dislikes(activity['id'])]
+        text += '\n—\n👍 {0}\n—\n👎 {1}'.format(', '.join(likes), ', '.join(dislikes))
 
-    reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
+        reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton('like', callback_data='like'), InlineKeyboardButton('dislike', callback_data='dislike')]])
 
-    bot.edit_message_text(text=text,
-                          chat_id=query.message.chat_id,
-                          message_id=query.message.message_id,
-                          reply_markup=reply_markup)
-
+        bot.edit_message_text(text=text,
+                              chat_id=query.message.chat_id,
+                              message_id=query.message.message_id,
+                              reply_markup=reply_markup)
+    except Exception as e:
+        print(str(e))
     query.answer()
 
 

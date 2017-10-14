@@ -31,7 +31,8 @@ def add_activities():
     description = request.args.get('description')
     user_id = request.args.get('user_id')
     user_name = request.args.get('user_name')
-    activity_id = database.add_new_activity(title, '', '', description, user_id, user_name)
+    user_username = request.args.get('user_username')
+    activity_id = database.add_new_activity(title, '', '', description, user_id, user_name, user_username)
     database.add_like(activity_id, user_id, user_name)
     return json.dumps({'status': 'ok'})
 
@@ -45,7 +46,9 @@ def add_like():
     activity_id = request.args.get('activity_id')
     user_id = request.args.get('user_id')
     user_name = request.args.get('user_name')
-    database.add_like(activity_id, user_id, user_name)
+    user_username = request.args.get('user_username')
+    database.add_like(activity_id, user_id, user_name, user_username)
+    database.remove_dislike(activity_id, user_id)
     return json.dumps({'status': 'ok'})
 
 @app.route('/remove_like', methods=['GET'])

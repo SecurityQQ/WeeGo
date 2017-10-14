@@ -8,19 +8,22 @@ create table entries (
   event_when text not null,
   full_message text not null,
   author text not null,
-  author_name text not null
+  author_name text not null,
+  author_username text not null
 );
 
 drop table if exists likes;
 create table likes (
   id integer not null,
   person text not null,
-  person_name text not null
+  person_name text not null,
+  person_username text not null
 );
 
 drop table if exists dislikes;
 create table dislikes (
   id integer not null,
   person text not null,
-  person_name text not null
+  person_name text not null,
+  person_username text not null
 );

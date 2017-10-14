@@ -37,11 +37,11 @@ def close_db(error):
         sqlite_dbs[thread_id] = None
 
 
-def add_new_activity(title, event_where, event_when, full_message, author, author_name):
+def add_new_activity(title, event_where, event_when, full_message, author, author_name, author_username):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute('insert into entries (title, event_where, event_when, full_message, author, author_name) values (?, ?, ?, ?, ?, ?)',
-                   (title, event_where, event_when, full_message, author, author_name))
+    cursor.execute('insert into entries (title, event_where, event_when, full_message, author, author_name, author_username) values (?, ?, ?, ?, ?, ?, ?)',
+                   (title, event_where, event_when, full_message, author, author_name, author_username))
     db.commit()
     return cursor.lastrowid
 
@@ -77,15 +77,15 @@ def get_activity_by_msg(chat_id, message_id):
 
 def get_likes(activity_id):
     db = get_db()
-    cur = db.execute('select distinct person, person_name from likes where id = (?)', (int(activity_id), ))
+    cur = db.execute('select distinct person, person_name, person_username from likes where id = (?)', (int(activity_id), ))
     entries = cur.fetchall()
     return [dict(x) for x in entries]
 
 
-def add_like(activity_id, user_id, user_name):
+def add_like(activity_id, user_id, user_name, user_username):
     # TODO: check if like exists
     db = get_db()
-    db.execute('insert into likes (id, person, person_name) values (?, ?, ?)', (activity_id, user_id, user_name))
+    db.execute('insert into likes (id, person, person_name, person_username) values (?, ?, ?, ?)', (activity_id, user_id, user_name, user_username))
     db.commit()
 
 
@@ -97,15 +97,15 @@ def remove_like(activity_id, user_id):
 
 def get_dislikes(activity_id):
     db = get_db()
-    cur = db.execute('select distinct person, person_name from dislikes where id = (?)', (int(activity_id), ))
+    cur = db.execute('select distinct person, person_name, person_username from dislikes where id = (?)', (int(activity_id), ))
     entries = cur.fetchall()
     return [dict(x) for x in entries]
 
 
-def add_dislike(activity_id, user_id, user_name):
+def add_dislike(activity_id, user_id, user_name, user_username):
     # TODO: check if like exists
     db = get_db()
-    db.execute('insert into dislikes (id, person, person_name) values (?, ?, ?)', (activity_id, user_id, user_name))
+    db.execute('insert into dislikes (id, person, person_name, person_username) values (?, ?, ?, ?)', (activity_id, user_id, user_name, user_username))
     db.commit()
 
 
