@@ -18,14 +18,15 @@ def smart_qr_code_by_name(name, suffix=".png", save_name=None):
     from pprint import pprint
     import json
 
-    url = json.loads(s.content).get('value')[0].get('contentUrl')
+    url = json.loads(s.content.decode('utf8')).get('value')[0].get('contentUrl')
 
     import tempfile
     with tempfile.NamedTemporaryFile(suffix=suffix) as fp:
         fp.write(r.get(url).content)
         path = fp.name
         print(path)
-        ver, ecl, qr_name = myqr.run("http://natribu.org", picture=path, save_name=save_name)
+        ver, ecl, qr_name = myqr.run("https://www.facebook.com/Cia-El-ladr%C3%B3n-de-patinetes-Teatro-167506496609941/", picture=path, save_name=save_name)
 
 
-smart_qr_code_by_name('cross', suffix=".png", save_name='medicine.png')
+smart_qr_code_by_name('theatre', suffix=".png", save_name='theatre.png')
+# smart_qr_code_by_name('cinema', suffix=".png", save_name='cinema.png')
