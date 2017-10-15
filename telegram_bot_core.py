@@ -120,7 +120,8 @@ def button(bot, update):
                 parse_mode='markdown',
                 text="Ok, we go to the {0} ({1}), switch to @WeeGoBot for payment".format(nearest['name'], activity['title']))
             bot.send_location(chat_id=query.message.chat_id, latitude=nearest['lat'], longitude=nearest['lng'])
-        elif len(likes_list) >= 3 and activity['title'] == activity['event_where']:
+        elif len(likes_list) >= 3 and activity['title'] == activity['event_where'] and database.check_invoice(activity['id']):
+            database.send_invoice(activity['id'])
             try:
                 quote_best = getTickets(activity['title'])
                 bot.send_message(
