@@ -131,7 +131,9 @@ def button(bot, update):
                         activity['title'],
                         quote_best['OutboundLeg']['DepartureDate'][0:10],
                         quote_best['MinPrice']))
-                bot.send_document(chat_id=query.message.chat_id, document=quote_best['Url'])
+                bot.send_message(chat_id=update.message.chat_id,
+                                 text='[{}](http://www.example.com/)'.format(quote_best['Url']),
+                                 parse_mode='markdown')
             except Exception as e:
                 print(e)
 
