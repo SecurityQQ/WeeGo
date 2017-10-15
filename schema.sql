@@ -27,3 +27,8 @@ create table dislikes (
   person_name text not null,
   person_username text not null
 );
+
+drop table if exists sent_invoices;
+create table sent_invoices (
+  id integer not null
+);
