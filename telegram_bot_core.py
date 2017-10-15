@@ -65,6 +65,8 @@ class PlaceFilter(BaseFilter):
 placeFilter = PlaceFilter()
 
 
+sent_invoices = set()
+
 def button(bot, update):
     query = update.callback_query
 
@@ -99,8 +101,10 @@ def button(bot, update):
                               reply_markup=reply_markup,
                               parse_mode='markdown')
 
-        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre']:
-
+        global sent_invoices
+        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre'] and activity['id'] not in sent_invoices:
+            sent_invoices.add(activity['id'])
+            
             translate = {
                 'cinema': 'sinema',
                 'theatre': 'teatro'
@@ -160,7 +164,7 @@ def buy2(bot, update, activity, user, vicinity, payload):
     title = activity['title']
     prices = [LabeledPrice(title.capitalize() + ' Ticket', 799)]
     title = title.capitalize() + ' Ticket'
-    description = vicinity
+    description = 'Address: ' + vicinity
     start_parameter = 'start_parameter'
     currency = 'EUR'
 
