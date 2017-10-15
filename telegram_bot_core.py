@@ -131,10 +131,10 @@ def button(bot, update):
                         activity['title'],
                         quote_best['OutboundLeg']['DepartureDate'][0:10],
                         quote_best['MinPrice']))
-                bot.send_message(chat_id=update.message.chat_id,
+                bot.send_message(chat_id=query.message.chat_id,
                                  text='[inline URL]({})'.format(quote_best['Url']),
                                  parse_mode='markdown')
-                bot.send_message(chat_id=update.message.chat_id,
+                bot.send_message(chat_id=query.message.chat_id,
                                  text='<a href="{}">inline URL</a>'.format(quote_best['Url']),
                                  parse_mode='html')
             except Exception as e:
