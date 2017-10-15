@@ -153,7 +153,7 @@ updater.dispatcher.add_handler(CommandHandler('hello', hello))
 
 def precheckout_callback(bot, update):
     query = update.pre_checkout_query
-    if query.invoice_payload == 'qr-code' or query.invoice_payload == 'no-qr-code':
+    if query.invoice_payload.startswith('qr-code') or query.invoice_payload.startswith('no-qr-code'):
         bot.answer_pre_checkout_query(pre_checkout_query_id=query.id, ok=True)
     #     print(res)
     else:
@@ -164,7 +164,7 @@ def successful_payment_callback(bot, update):
     update.message.reply_text("Have a nice evening!")
     payload = update.message.successful_payment.invoice_payload
     print(payload)
-    payload, title = payload.split('#')
+    payload, title = payload.split('Z')
     if payload == 'qr-code':
         bot.send_photo(update.message.from_user.id,
                        photo=open('./{0}.png'.format(title), 'rb'),
@@ -190,7 +190,7 @@ def buy2(bot, update, activity, user, vicinity, payload):
     bot.send_invoice(user['person'],
                      title,
                      description,
-                     payload + '#' + title,
+                     payload + 'Z' + title,
                      provider_token="284685063:TEST:MzYxZDFhMjNjNTVj",
                      start_parameter=start_parameter,
                      currency=currency,
