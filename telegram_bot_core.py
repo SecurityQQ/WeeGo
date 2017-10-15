@@ -127,13 +127,13 @@ def button(bot, update):
                 bot.send_message(
                     chat_id=query.message.chat_id,
                     parse_mode='markdown',
-                    text="The cheapest variant to go to {}: {} from {} USD".format(
+                    text="The cheapest variant to go to {}: \n{} from {} USD".format(
                         activity['title'],
                         quote_best['OutboundLeg']['DepartureDate'][0:10],
                         quote_best['MinPrice']))
                 bot.send_document(chat_id=query.message.chat_id, document=quote_best['Url'])
             except Exception as e:
-                pass
+                print(e)
 
     except Exception as e:
         print(e)
