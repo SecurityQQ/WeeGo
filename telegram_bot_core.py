@@ -199,14 +199,14 @@ def buy2(bot, update, activity, user, vicinity, payload):
 
 
 def buy(bot, update, payload):
-    prices = [LabeledPrice('Cinema Ticket', 799)]
-    title = 'Cinema Ticket'
+    prices = [LabeledPrice('Grand Party Ticket', 299999)]
+    title = 'Grand Party Ticket'
     description = 'Diagonal, 11'
     start_parameter = 'start_parameter'
     currency = 'EUR'
 
-    bot.send_message(chat_id=update.message.chat_id, text="Ok, we go to the cinema, switch to @WeeGoBot for payment")
-    bot.send_message(chat_id=update.message.from_user.id, text="Tickets receipt")
+    bot.send_message(chat_id=update.message.chat_id, text="Ok, lets go and drink some vodka, check @WeeGoBot for payment")
+    bot.send_message(chat_id=update.message.from_user.id, text="Ticket receipt")
 
     bot.send_invoice(update.message.from_user.id,
                      title,
@@ -223,9 +223,14 @@ def send_invoice_with_qr_code_hook(bot, update):
 def send_invoice_no_qr_code(bot, update):
     return buy(bot, update, 'no-qr-code')
 
+def send_invoice_party(bot, update):
+    return buy(bot, update, 'no-qr-codeZz')
+
 
 updater.dispatcher.add_handler(CommandHandler('buy_with_qr', send_invoice_with_qr_code_hook))
 updater.dispatcher.add_handler(CommandHandler('buy_no_qr', send_invoice_no_qr_code))
+
+updater.dispatcher.add_handler(CommandHandler('party', send_invoice_party))
 
 updater.dispatcher.add_handler(PreCheckoutQueryHandler(precheckout_callback))
 updater.dispatcher.add_handler(MessageHandler(Filters.successful_payment, successful_payment_callback))
