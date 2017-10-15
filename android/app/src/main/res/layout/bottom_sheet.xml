@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:elevation="2dp"
+    android:outlineProvider="bounds"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    <EditText
+        android:id="@+id/new_activity_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="start"
+        android:background="@drawable/border"
+        android:hint="Activity name:" />
+    <EditText
+        android:id="@+id/new_activity_description"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:inputType="textMultiLine"
+        android:gravity="start|top"
+        android:background="@android:color/transparent"
+        android:hint="Description:" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"><View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/clear"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@android:color/white"
+            android:backgroundTint="@color/colorClear"
+            android:src="@drawable/ic_clear" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:tint="@android:color/white"
+            android:backgroundTint="@color/selectedButton"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_check_black_24dp"/>
+    </LinearLayout>
+</LinearLayout>
