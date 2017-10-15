@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/MiniJava" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Mobilization/MapDummy" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Mobilization/TimeToGo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Mobilization/TradeCat" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Mobilization/WeatherMobilization" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Mobilization/yamblz-transfer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Mobilization/yamblz-weather" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Sunshine/Sunshine-Version-2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clust-git/ml-project" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clust-git/web-project" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/git/MySunshine" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/git/MyYandexTranslate" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ikholopov.github.io" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/jekyll-cayman-theme" vcs="Git" />
+  </component>
+</project>
