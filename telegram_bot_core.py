@@ -119,7 +119,7 @@ def button(bot, update):
                 chat_id=query.message.chat_id,
                 parse_mode='markdown',
                 text="Ok, we go to the {0} ({1}), switch to @WeeGoBot for payment".format(nearest['name'], activity['title']))
-                bot.send_location(chat_id=query.message.chat_id, latitude=nearest['lat'], longitude=nearest['lng'])
+            bot.send_location(chat_id=query.message.chat_id, latitude=nearest['lat'], longitude=nearest['lng'])
         elif len(likes_list) >= 3 and activity['title'] == activity['event_where']:
             try:
                 quote_best = getTickets(activity['title'])
