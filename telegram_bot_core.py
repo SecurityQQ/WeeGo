@@ -12,6 +12,7 @@ from telegram.ext import Updater,\
 from telegram.labeledprice import LabeledPrice
 from telegram.successfulpayment import SuccessfulPayment
 from recognise_event import recogniseEvent
+from get_airplane_tickets import getTickets
 import re
 
 def start(bot, update):
@@ -107,6 +108,18 @@ def button(bot, update):
                 chat_id=query.message.chat_id,
                 parse_mode='markdown',
                 text="Ok, we go to the {0}, switch to WeeGoBot (tg://resolve?domain=WeeGoBot​) for payment".format(activity['title']))
+        elif len(likes_list) >= 3 and activity['title'] == activity['event_where']:
+            try:
+                quote_best = getTickets(activity['title'])
+                bot.send_message(
+                    chat_id=query.message.chat_id,
+                    parse_mode='markdown',
+                    text="The cheapest variant to go to {}: {} for {}".format(
+                        activity['title'],
+                        quote_best['OutboundLeg']['DepartureDate'][0:10],
+                        quote_best['MinPrice']))
+            except Exception as e:
+                pass
 
     except Exception as e:
         print(str(e))
