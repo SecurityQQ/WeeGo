@@ -191,7 +191,7 @@ def buy2(bot, update, activity, user, vicinity, payload):
     bot.send_invoice(user['person'],
                      title,
                      description,
-                     payload + 'Z' + activity['title'],
+                     payload + 'Z' +  activity['title'],
                      provider_token="284685063:TEST:MzYxZDFhMjNjNTVj",
                      start_parameter=start_parameter,
                      currency=currency,
