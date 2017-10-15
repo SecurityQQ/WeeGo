@@ -120,7 +120,8 @@ def button(bot, update):
                 parse_mode='markdown',
                 text="Ok, we go to the {0} ({1}), switch to @WeeGoBot for payment".format(nearest['name'], activity['title']))
             bot.send_location(chat_id=query.message.chat_id, latitude=nearest['lat'], longitude=nearest['lng'])
-        elif len(likes_list) >= 3 and activity['title'] == activity['event_where']:
+        elif len(likes_list) >= 3 and activity['title'] == activity['event_where'] and database.check_invoice(activity['id']):
+            database.send_invoice(activity['id'])
             try:
                 quote_best = getTickets(activity['title'])
                 bot.send_message(
@@ -153,7 +154,7 @@ updater.dispatcher.add_handler(CommandHandler('hello', hello))
 
 def precheckout_callback(bot, update):
     query = update.pre_checkout_query
-    if query.invoice_payload == 'qr-code' or query.invoice_payload == 'no-qr-code':
+    if query.invoice_payload.startswith('qr-code') or query.invoice_payload.startswith('no-qr-code'):
         bot.answer_pre_checkout_query(pre_checkout_query_id=query.id, ok=True)
     #     print(res)
     else:
@@ -164,15 +165,22 @@ def successful_payment_callback(bot, update):
     update.message.reply_text("Have a nice evening!")
     payload = update.message.successful_payment.invoice_payload
     print(payload)
+    payload, title = payload.split('Z')
     if payload == 'qr-code':
         bot.send_photo(update.message.from_user.id,
-                       photo=open('./cinema.png', 'rb'),
-                       caption="It is your ticket, scan it in the cinema")
+                       photo=open('./{0}.png'.format(title), 'rb'),
+                       caption="It is your ticket, scan it in the " + title)
 
 
 def buy2(bot, update, activity, user, vicinity, payload):
     title = activity['title']
-    prices = [LabeledPrice(title.capitalize() + ' Ticket', 799)]
+
+    prices_dict = {
+        'cinema': 799,
+        'theatre': 2499
+    }
+
+    prices = [LabeledPrice(title.capitalize() + ' Ticket', prices_dict[title])]
     title = title.capitalize() + ' Ticket'
     description = 'Address: ' + vicinity
     start_parameter = 'start_parameter'
@@ -183,7 +191,7 @@ def buy2(bot, update, activity, user, vicinity, payload):
     bot.send_invoice(user['person'],
                      title,
                      description,
-                     payload,
+                     payload + 'Z' + title,
                      provider_token="284685063:TEST:MzYxZDFhMjNjNTVj",
                      start_parameter=start_parameter,
                      currency=currency,
