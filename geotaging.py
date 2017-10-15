@@ -34,7 +34,7 @@ def get_places_nearby(lat=None, lng=None, radius=500, type=None, name=None):
 
     url = base + location + type_part + name_part + key_part
 
-    content = json.loads(r.get(url).content)
+    content = json.loads(r.get(url).content.decode('utf8'))
 
     results = []
     if content['status'] == 'ZERO_RESULTS':
@@ -52,4 +52,4 @@ def get_places_nearby(lat=None, lng=None, radius=500, type=None, name=None):
             print(e)
     return results
 
-print(get_places_nearby(radius=1000, name="sinema"))
+# print(get_places_nearby(radius=1000, name="sinema"))

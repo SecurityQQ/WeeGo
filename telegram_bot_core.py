@@ -14,6 +14,8 @@ from telegram.successfulpayment import SuccessfulPayment
 from recognise_event import recogniseEvent
 import re
 
+import geotaging
+
 def start(bot, update):
     update.message.reply_text('Hello World!')
 
@@ -97,19 +99,30 @@ def button(bot, update):
                               reply_markup=reply_markup,
                               parse_mode='markdown')
 
-        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre']:
+        if len(likes_list) >= 1 and activity['title'] in ['cinema', 'theatre']:
+
+            translate = {
+                'cinema': 'sinema',
+                'theatre': 'teatro'
+            }
+            nearest = geotaging.get_places_nearby(radius=1000, name=translate[activity['title']])[0]
+
             try:
                 for user in likes_list:
-                    buy2(bot, update, activity, user, 'qr-code')
+                    buy2(bot, update, activity, user, nearest['vicinity'], 'qr-code')
             except Exception as e:
-                print(str(e))
+                print(e)
+
             bot.send_message(
                 chat_id=query.message.chat_id,
                 parse_mode='markdown',
-                text="Ok, we go to the {0}, switch to WeeGoBot (tg://resolve?domain=WeeGoBot​) for payment".format(activity['title']))
+                text="Ok, we go to the {0} ({1}), switch to WeeGoBot (tg://resolve?domain=WeeGoBot​) for payment".format(nearest['name'], activity['title']))
+
+            bot.send_location(chat_id=query.message.chat_id, latitude=nearest['lat'], longitude=nearest['lng'])
 
     except Exception as e:
-        print(str(e))
+        print(e)
+        raise
     query.answer()
 
 
@@ -143,11 +156,11 @@ def successful_payment_callback(bot, update):
                        caption="It is your ticket, scan it in the cinema")
 
 
-def buy2(bot, update, activity, user, payload):
+def buy2(bot, update, activity, user, vicinity, payload):
     title = activity['title']
     prices = [LabeledPrice(title.capitalize() + ' Ticket', 799)]
     title = title.capitalize() + ' Ticket'
-    description = 'Diagonal, 11'
+    description = vicinity
     start_parameter = 'start_parameter'
     currency = 'EUR'
 
