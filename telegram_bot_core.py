@@ -163,15 +163,22 @@ def successful_payment_callback(bot, update):
     update.message.reply_text("Have a nice evening!")
     payload = update.message.successful_payment.invoice_payload
     print(payload)
+    payload, title = payload.split('#')
     if payload == 'qr-code':
         bot.send_photo(update.message.from_user.id,
-                       photo=open('./cinema.png', 'rb'),
-                       caption="It is your ticket, scan it in the cinema")
+                       photo=open('./{0}.png'.format(title), 'rb'),
+                       caption="It is your ticket, scan it in the " + title)
 
 
 def buy2(bot, update, activity, user, vicinity, payload):
     title = activity['title']
-    prices = [LabeledPrice(title.capitalize() + ' Ticket', 799)]
+
+    prices_dict = {
+        'cinema': 799,
+        'theatre': 2499
+    }
+
+    prices = [LabeledPrice(title.capitalize() + ' Ticket', prices_dict[title])]
     title = title.capitalize() + ' Ticket'
     description = 'Address: ' + vicinity
     start_parameter = 'start_parameter'
@@ -182,7 +189,7 @@ def buy2(bot, update, activity, user, vicinity, payload):
     bot.send_invoice(user['person'],
                      title,
                      description,
-                     payload,
+                     payload + '#' + title,
                      provider_token="284685063:TEST:MzYxZDFhMjNjNTVj",
                      start_parameter=start_parameter,
                      currency=currency,
