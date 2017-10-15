@@ -99,7 +99,7 @@ def button(bot, update):
                               reply_markup=reply_markup,
                               parse_mode='markdown')
 
-        if len(likes_list) >= 1 and activity['title'] in ['cinema', 'theatre']:
+        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre']:
 
             translate = {
                 'cinema': 'sinema',
