@@ -115,6 +115,19 @@ def remove_dislike(activity_id, user_id):
     db.commit()
 
 
+def check_invoice(activity_id):
+    db = get_db()
+    cur = db.execute('select id from sent_invoices where id = (?)', (int(activity_id), ))
+    entries = cur.fetchall()
+    return len(entries) == 0
+
+
+def send_invoice(activity_id):
+    db = get_db()
+    db.execute('insert into sent_invoices (id) values (?)', (activity_id, ))
+    db.commit()
+
+
 if __name__ == '__main__':
     init_db()
     print('Initialized the database.')

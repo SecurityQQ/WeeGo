@@ -65,8 +65,6 @@ class PlaceFilter(BaseFilter):
 placeFilter = PlaceFilter()
 
 
-sent_invoices = set()
-
 def button(bot, update):
     query = update.callback_query
 
@@ -101,10 +99,9 @@ def button(bot, update):
                               reply_markup=reply_markup,
                               parse_mode='markdown')
 
-        global sent_invoices
-        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre'] and activity['id'] not in sent_invoices:
-            sent_invoices.add(activity['id'])
-            
+        if len(likes_list) >= 3 and activity['title'] in ['cinema', 'theatre'] and database.check_invoice(activity['id']):
+            database.send_invoice(activity['id'])
+
             translate = {
                 'cinema': 'sinema',
                 'theatre': 'teatro'
