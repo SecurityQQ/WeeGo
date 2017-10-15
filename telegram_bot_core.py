@@ -117,7 +117,7 @@ def button(bot, update):
             bot.send_message(
                 chat_id=query.message.chat_id,
                 parse_mode='markdown',
-                text="Ok, we go to the {0} ({1}), switch to WeeGoBot (tg://resolve?domain=WeeGoBot​) for payment".format(nearest['name'], activity['title']))
+                text="Ok, we go to the {0} ({1}), switch to @WeeGoBot for payment".format(nearest['name'], activity['title']))
 
             bot.send_location(chat_id=query.message.chat_id, latitude=nearest['lat'], longitude=nearest['lng'])
 
