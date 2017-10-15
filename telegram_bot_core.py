@@ -127,7 +127,7 @@ def button(bot, update):
                 bot.send_message(
                     chat_id=query.message.chat_id,
                     parse_mode='markdown',
-                    text="The cheapest variant to go to {}: ✈️ \n{} from {} USD\n{}".format(
+                    text="The cheapest variant to go to {}: \n✈️ {} from {} USD\n{}".format(
                         activity['title'],
                         quote_best['OutboundLeg']['DepartureDate'][0:10],
                         quote_best['MinPrice'],
