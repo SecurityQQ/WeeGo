@@ -127,16 +127,11 @@ def button(bot, update):
                 bot.send_message(
                     chat_id=query.message.chat_id,
                     parse_mode='markdown',
-                    text="The cheapest variant to go to {}: \n{} from {} USD".format(
+                    text="The cheapest variant to go to {}: ✈️ \n{} from {} USD\n{}".format(
                         activity['title'],
                         quote_best['OutboundLeg']['DepartureDate'][0:10],
-                        quote_best['MinPrice']))
-                bot.send_message(chat_id=update.message.chat_id,
-                                 text='[inline URL]({})'.format(quote_best['Url']),
-                                 parse_mode='markdown')
-                bot.send_message(chat_id=update.message.chat_id,
-                                 text='<a href="{}">inline URL</a>'.format(quote_best['Url']),
-                                 parse_mode='html')
+                        quote_best['MinPrice'],
+                        quote_best['Url']))
             except Exception as e:
                 print(e)
 
